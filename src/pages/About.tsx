@@ -169,12 +169,10 @@ const About = () => {
                 <div>
                   <h3 className="text-xl font-semibold mb-3">Your Privacy is Our Priority</h3>
                   <p className="text-muted-foreground leading-relaxed mb-4">
-                    We understand that mental health data is deeply personal. MindTrack stores all data locally 
-                    on your device, giving you complete control over your information. We never share, sell, or 
-                    access your personal wellness data.
+                    We understand that mental health data is deeply personal. MindTrack uses a secure, encrypted database to store your wellness data, ensuring it remains strictly confidential. You have complete control over your information, and we will never share, sell, distribute, or access your personal wellness data.
                   </p>
                   <div className="flex flex-wrap gap-2">
-                    <Badge variant="secondary">Local Storage</Badge>
+                    <Badge variant="secondary">Secure Storage</Badge>
                     <Badge variant="secondary">No Data Mining</Badge>
                     <Badge variant="secondary">User Controlled</Badge>
                     <Badge variant="secondary">Transparent</Badge>
