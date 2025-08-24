@@ -6,12 +6,18 @@ import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
 import { Progress } from '@/components/ui/progress';
 import { useNavigate } from 'react-router-dom';
+import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/hooks/useAuth';
+import { supabase } from '@/integrations/supabase/client';
 import { CheckCircle, ArrowLeft, ArrowRight, Brain } from 'lucide-react';
 
 const Assessment = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
+  const { user } = useAuth();
   const [currentStep, setCurrentStep] = useState(0);
   const [responses, setResponses] = useState<Record<string, any>>({});
+  const [saving, setSaving] = useState(false);
 
   const questions = [
     {
@@ -81,15 +87,62 @@ const Assessment = () => {
     }));
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (isLastStep) {
-      // Save responses and navigate to dashboard
-      localStorage.setItem('assessmentResponses', JSON.stringify({
-        ...responses,
-        timestamp: new Date().toISOString(),
-        id: Date.now().toString()
-      }));
-      navigate('/dashboard?completed=true');
+      if (!user) {
+        // If not logged in, redirect to login
+        toast({
+          title: "Please sign in",
+          description: "You need to be logged in to save your assessment.",
+          variant: "destructive"
+        });
+        navigate('/login');
+        return;
+      }
+
+      setSaving(true);
+      try {
+        // Save to Supabase
+        const { error } = await supabase
+          .from('wellness_assessments')
+          .insert({
+            user_id: user.id,
+            mood: parseInt(responses.mood),
+            stress: responses.stress,
+            sleep: parseInt(responses.sleep),
+            energy: responses.energy,
+            social: parseInt(responses.social)
+          });
+
+        if (error) {
+          toast({
+            title: "Error saving assessment",
+            description: error.message,
+            variant: "destructive"
+          });
+        } else {
+          // Also save to localStorage as backup
+          localStorage.setItem('assessmentResponses', JSON.stringify({
+            ...responses,
+            timestamp: new Date().toISOString(),
+            id: Date.now().toString()
+          }));
+          
+          toast({
+            title: "Assessment completed! 🎉",
+            description: "Your responses have been saved successfully."
+          });
+          navigate('/dashboard?completed=true');
+        }
+      } catch (error) {
+        toast({
+          title: "Error saving assessment",
+          description: "An unexpected error occurred. Please try again.",
+          variant: "destructive"
+        });
+      } finally {
+        setSaving(false);
+      }
     } else {
       setCurrentStep(prev => prev + 1);
     }
@@ -191,12 +244,12 @@ const Assessment = () => {
 
           <Button
             onClick={handleNext}
-            disabled={!canProceed}
+            disabled={!canProceed || saving}
             className="transition-bounce hover:scale-105"
           >
             {isLastStep ? (
               <>
-                Complete Assessment
+                {saving ? "Saving..." : "Complete Assessment"}
                 <CheckCircle className="ml-2 h-4 w-4" />
               </>
             ) : (

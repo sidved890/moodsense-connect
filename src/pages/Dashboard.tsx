@@ -4,10 +4,12 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useSearchParams, Link } from 'react-router-dom';
+import { useSearchParams, Link, useNavigate } from 'react-router-dom';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, LineChart, Line, RadialBarChart, RadialBar, PieChart, Pie, Cell } from 'recharts';
 import { TrendingUp, Heart, Brain, Moon, Zap, Users, Share2, Calendar, Target, Lightbulb, Star, Clock } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/hooks/useAuth';
+import { supabase } from '@/integrations/supabase/client';
 
 interface AssessmentData {
   id: string;
@@ -21,7 +23,9 @@ interface AssessmentData {
 
 const Dashboard = () => {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const { toast } = useToast();
+  const { user, loading } = useAuth();
   const [assessments, setAssessments] = useState<AssessmentData[]>([]);
   const [currentQuote, setCurrentQuote] = useState('');
   const [timeFrame, setTimeFrame] = useState('7days');
@@ -35,11 +39,51 @@ const Dashboard = () => {
   ];
 
   useEffect(() => {
-    // Load assessment data
-    const savedData = localStorage.getItem('assessmentResponses');
-    if (savedData) {
-      const data = JSON.parse(savedData);
-      setAssessments([data]);
+    const loadAssessmentData = async () => {
+      if (user) {
+        try {
+          // Load from Supabase
+          const { data, error } = await supabase
+            .from('wellness_assessments')
+            .select('*')
+            .eq('user_id', user.id)
+            .order('created_at', { ascending: false });
+
+          if (error) {
+            console.error('Error loading assessments:', error);
+            // Fallback to localStorage
+            const savedData = localStorage.getItem('assessmentResponses');
+            if (savedData) {
+              const data = JSON.parse(savedData);
+              setAssessments([data]);
+            }
+          } else if (data && data.length > 0) {
+            // Convert database format to component format
+            const formattedData = data.map(assessment => ({
+              id: assessment.id,
+              timestamp: assessment.created_at,
+              mood: assessment.mood.toString(),
+              stress: assessment.stress,
+              sleep: assessment.sleep.toString(),
+              energy: assessment.energy,
+              social: assessment.social.toString()
+            }));
+            setAssessments(formattedData);
+          }
+        } catch (error) {
+          console.error('Error loading assessments:', error);
+        }
+      }
+    };
+
+    if (!loading) {
+      if (!user) {
+        // Redirect to login if not authenticated
+        navigate('/login');
+        return;
+      }
+      
+      loadAssessmentData();
     }
 
     // Set daily quote
@@ -53,7 +97,7 @@ const Dashboard = () => {
         description: "Your responses have been saved and insights are ready.",
       });
     }
-  }, [searchParams, toast]);
+  }, [user, loading, navigate, searchParams, toast]);
 
   const latestAssessment = assessments[0];
 

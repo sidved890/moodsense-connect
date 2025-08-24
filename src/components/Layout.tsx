@@ -1,7 +1,8 @@
 import { ReactNode } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Brain, Heart, BarChart3, User, BookOpen } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
+import { Brain, Heart, BarChart3, User, BookOpen, LogOut, LogIn } from 'lucide-react';
 
 interface LayoutProps {
   children: ReactNode;
@@ -9,6 +10,7 @@ interface LayoutProps {
 
 const Layout = ({ children }: LayoutProps) => {
   const location = useLocation();
+  const { user, signOut } = useAuth();
   
   const navigation = [
     { name: 'Home', href: '/', icon: Heart },
@@ -53,6 +55,30 @@ const Layout = ({ children }: LayoutProps) => {
                   </Link>
                 );
               })}
+              
+              {/* Auth buttons */}
+              {user ? (
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={signOut}
+                  className="transition-smooth hover:scale-105 ml-2"
+                >
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Sign Out
+                </Button>
+              ) : (
+                <Link to="/login">
+                  <Button 
+                    variant="default" 
+                    size="sm"
+                    className="transition-smooth hover:scale-105 ml-2"
+                  >
+                    <LogIn className="h-4 w-4 mr-2" />
+                    Sign In
+                  </Button>
+                </Link>
+              )}
             </nav>
 
             {/* Mobile menu button would go here */}
