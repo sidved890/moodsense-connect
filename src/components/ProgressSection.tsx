@@ -30,9 +30,11 @@ const ProgressSection = ({ assessments }: ProgressSectionProps) => {
       .slice()
       .reverse() // Show chronologically
       .map((assessment, index) => ({
-        time: new Date(assessment.timestamp).toLocaleDateString('en-US', { 
+        time: new Date(assessment.timestamp).toLocaleString('en-US', { 
           month: 'short', 
-          day: 'numeric' 
+          day: 'numeric',
+          hour: 'numeric',
+          minute: '2-digit'
         }),
         mood: parseInt(assessment.mood) * 2, // Convert 1-5 to 2-10
         stress: assessment.stress,
