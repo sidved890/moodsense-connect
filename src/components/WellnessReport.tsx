@@ -5,7 +5,8 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { 
   LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer,
-  BarChart, Bar, RadialBarChart, RadialBar, PieChart, Pie, Cell
+  BarChart, Bar, RadialBarChart, RadialBar, PieChart, Pie, Cell,
+  RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar
 } from 'recharts';
 import { 
   Brain, Heart, TrendingUp, Download, Share2, AlertTriangle, 
@@ -371,7 +372,7 @@ const WellnessReport = ({ assessments, currentAssessment }: WellnessReportProps)
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={400}>
-              <RadialBarChart cx="50%" cy="50%" innerRadius="20%" outerRadius="80%" data={[
+              <RadarChart data={[
                 {
                   metric: 'Mood',
                   value: parseInt(currentAssessment.mood) * 2, // Convert 1-5 to 2-10 scale
@@ -398,48 +399,29 @@ const WellnessReport = ({ assessments, currentAssessment }: WellnessReportProps)
                   fullMark: 10
                 }
               ]}>
-                <RadialBar dataKey="value" cornerRadius={10} fill="hsl(var(--primary))" />
-              </RadialBarChart>
+                <PolarGrid stroke="hsl(var(--border))" />
+                <PolarAngleAxis 
+                  dataKey="metric" 
+                  tick={{ fill: 'hsl(var(--foreground))', fontSize: 12 }}
+                  className="text-sm font-medium"
+                />
+                <PolarRadiusAxis 
+                  angle={90} 
+                  domain={[0, 10]} 
+                  tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }}
+                  tickCount={6}
+                />
+                <Radar
+                  name="Wellness"
+                  dataKey="value"
+                  stroke="hsl(var(--primary))"
+                  fill="hsl(var(--primary))"
+                  fillOpacity={0.2}
+                  strokeWidth={2}
+                  dot={{ fill: 'hsl(var(--primary))', strokeWidth: 2, r: 4 }}
+                />
+              </RadarChart>
             </ResponsiveContainer>
-            
-            {/* Legend */}
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mt-6">
-              <div className="text-center">
-                <div className="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-2">
-                  <div className="w-3 h-3 bg-primary rounded-full"></div>
-                </div>
-                <p className="text-sm font-medium">Mood</p>
-                <p className="text-xs text-muted-foreground">{parseInt(currentAssessment.mood) * 2}/10</p>
-              </div>
-              <div className="text-center">
-                <div className="w-8 h-8 bg-destructive/20 rounded-full flex items-center justify-center mx-auto mb-2">
-                  <div className="w-3 h-3 bg-destructive rounded-full"></div>
-                </div>
-                <p className="text-sm font-medium">Stress</p>
-                <p className="text-xs text-muted-foreground">{10 - currentAssessment.stress}/10</p>
-              </div>
-              <div className="text-center">
-                <div className="w-8 h-8 bg-accent-bright/20 rounded-full flex items-center justify-center mx-auto mb-2">
-                  <div className="w-3 h-3 bg-accent-bright rounded-full"></div>
-                </div>
-                <p className="text-sm font-medium">Energy</p>
-                <p className="text-xs text-muted-foreground">{currentAssessment.energy}/10</p>
-              </div>
-              <div className="text-center">
-                <div className="w-8 h-8 bg-secondary-accent/20 rounded-full flex items-center justify-center mx-auto mb-2">
-                  <div className="w-3 h-3 bg-secondary-accent rounded-full"></div>
-                </div>
-                <p className="text-sm font-medium">Sleep</p>
-                <p className="text-xs text-muted-foreground">{parseInt(currentAssessment.sleep) * 2}/10</p>
-              </div>
-              <div className="text-center">
-                <div className="w-8 h-8 bg-primary-soft/40 rounded-full flex items-center justify-center mx-auto mb-2">
-                  <div className="w-3 h-3 bg-primary-soft rounded-full"></div>
-                </div>
-                <p className="text-sm font-medium">Social</p>
-                <p className="text-xs text-muted-foreground">{parseInt(currentAssessment.social) * 2}/10</p>
-              </div>
-            </div>
           </CardContent>
         </Card>
 
