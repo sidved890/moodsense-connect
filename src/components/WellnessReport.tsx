@@ -358,25 +358,88 @@ const WellnessReport = ({ assessments, currentAssessment }: WellnessReportProps)
           </CardContent>
         </Card>
 
-        {/* Progress Trends */}
+        {/* Wellness Balance Radar Chart */}
         <Card className="wellness-card">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <TrendingUp className="h-5 w-5 text-primary" />
-              7-Day Wellness Trends
+              <Target className="h-5 w-5 text-primary" />
+              Wellness Balance Radar Chart
             </CardTitle>
+            <p className="text-sm text-muted-foreground">
+              A holistic snapshot of your well-being across key areas
+            </p>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={trendData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                <XAxis dataKey="date" stroke="hsl(var(--muted-foreground))" />
-                <YAxis stroke="hsl(var(--muted-foreground))" />
-                <Line type="monotone" dataKey="mood" stroke="hsl(var(--primary))" strokeWidth={2} name="Mood" />
-                <Line type="monotone" dataKey="energy" stroke="hsl(var(--accent-bright))" strokeWidth={2} name="Energy" />
-                <Line type="monotone" dataKey="stress" stroke="hsl(var(--destructive))" strokeWidth={2} name="Stress" />
-              </LineChart>
+            <ResponsiveContainer width="100%" height={400}>
+              <RadialBarChart cx="50%" cy="50%" innerRadius="20%" outerRadius="80%" data={[
+                {
+                  metric: 'Mood',
+                  value: parseInt(currentAssessment.mood) * 2, // Convert 1-5 to 2-10 scale
+                  fullMark: 10
+                },
+                {
+                  metric: 'Stress',
+                  value: 10 - currentAssessment.stress, // Invert stress (high stress = low wellness)
+                  fullMark: 10
+                },
+                {
+                  metric: 'Energy',
+                  value: currentAssessment.energy,
+                  fullMark: 10
+                },
+                {
+                  metric: 'Sleep',
+                  value: parseInt(currentAssessment.sleep) * 2, // Convert 1-5 to 2-10 scale
+                  fullMark: 10
+                },
+                {
+                  metric: 'Social',
+                  value: parseInt(currentAssessment.social) * 2, // Convert 1-5 to 2-10 scale
+                  fullMark: 10
+                }
+              ]}>
+                <RadialBar dataKey="value" cornerRadius={10} fill="hsl(var(--primary))" />
+              </RadialBarChart>
             </ResponsiveContainer>
+            
+            {/* Legend */}
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mt-6">
+              <div className="text-center">
+                <div className="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-2">
+                  <div className="w-3 h-3 bg-primary rounded-full"></div>
+                </div>
+                <p className="text-sm font-medium">Mood</p>
+                <p className="text-xs text-muted-foreground">{parseInt(currentAssessment.mood) * 2}/10</p>
+              </div>
+              <div className="text-center">
+                <div className="w-8 h-8 bg-destructive/20 rounded-full flex items-center justify-center mx-auto mb-2">
+                  <div className="w-3 h-3 bg-destructive rounded-full"></div>
+                </div>
+                <p className="text-sm font-medium">Stress</p>
+                <p className="text-xs text-muted-foreground">{10 - currentAssessment.stress}/10</p>
+              </div>
+              <div className="text-center">
+                <div className="w-8 h-8 bg-accent-bright/20 rounded-full flex items-center justify-center mx-auto mb-2">
+                  <div className="w-3 h-3 bg-accent-bright rounded-full"></div>
+                </div>
+                <p className="text-sm font-medium">Energy</p>
+                <p className="text-xs text-muted-foreground">{currentAssessment.energy}/10</p>
+              </div>
+              <div className="text-center">
+                <div className="w-8 h-8 bg-secondary-accent/20 rounded-full flex items-center justify-center mx-auto mb-2">
+                  <div className="w-3 h-3 bg-secondary-accent rounded-full"></div>
+                </div>
+                <p className="text-sm font-medium">Sleep</p>
+                <p className="text-xs text-muted-foreground">{parseInt(currentAssessment.sleep) * 2}/10</p>
+              </div>
+              <div className="text-center">
+                <div className="w-8 h-8 bg-primary-soft/40 rounded-full flex items-center justify-center mx-auto mb-2">
+                  <div className="w-3 h-3 bg-primary-soft rounded-full"></div>
+                </div>
+                <p className="text-sm font-medium">Social</p>
+                <p className="text-xs text-muted-foreground">{parseInt(currentAssessment.social) * 2}/10</p>
+              </div>
+            </div>
           </CardContent>
         </Card>
 
