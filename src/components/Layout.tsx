@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
-import { Brain, Heart, BarChart3, User, BookOpen, LogOut, LogIn } from 'lucide-react';
+import { Brain, Heart, BarChart3, User, BookOpen, Shield, LogOut, LogIn } from 'lucide-react';
 
 interface LayoutProps {
   children: ReactNode;
@@ -18,6 +18,7 @@ const Layout = ({ children }: LayoutProps) => {
     { name: 'Dashboard', href: '/dashboard', icon: User },
     { name: 'AI Report', href: '/report', icon: Brain },
     { name: 'About', href: '/about', icon: BookOpen },
+    { name: 'Emergency', href: '/emergency-contacts', icon: Shield },
   ];
 
   const isActive = (path: string) => location.pathname === path;
