@@ -172,7 +172,7 @@ const Dashboard = () => {
         </div>
 
         {/* Quick Actions */}
-        <div className="grid md:grid-cols-3 gap-4 mb-8">
+        <div className="grid md:grid-cols-4 gap-4 mb-8">
           <Link to="/assessment">
             <Card className="wellness-card cursor-pointer">
               <CardContent className="p-4 text-center">
@@ -182,10 +182,20 @@ const Dashboard = () => {
               </CardContent>
             </Card>
           </Link>
+
+          <Link to="/report">
+            <Card className="wellness-card cursor-pointer">
+              <CardContent className="p-4 text-center">
+                <Brain className="h-8 w-8 text-secondary-accent mx-auto mb-2" />
+                <h3 className="font-semibold mb-1">AI Wellness Report</h3>
+                <p className="text-sm text-muted-foreground">Generate detailed insights</p>
+              </CardContent>
+            </Card>
+          </Link>
           
           <Card className="wellness-card cursor-pointer" onClick={() => toast({ title: "Coming soon!", description: "Share feature will be available soon." })}>
             <CardContent className="p-4 text-center">
-              <Share2 className="h-8 w-8 text-secondary-accent mx-auto mb-2" />
+              <Share2 className="h-8 w-8 text-accent-bright mx-auto mb-2" />
               <h3 className="font-semibold mb-1">Share Report</h3>
               <p className="text-sm text-muted-foreground">Export your insights</p>
             </CardContent>
@@ -193,7 +203,7 @@ const Dashboard = () => {
 
           <Card className="wellness-card">
             <CardContent className="p-4 text-center">
-              <Calendar className="h-8 w-8 text-accent-bright mx-auto mb-2" />
+              <Calendar className="h-8 w-8 text-secondary-accent mx-auto mb-2" />
               <h3 className="font-semibold mb-1">Last Check-in</h3>
               <p className="text-sm text-muted-foreground">
                 {new Date(latestAssessment.timestamp).toLocaleDateString()}

@@ -14,6 +14,7 @@ const Layout = ({ children }: LayoutProps) => {
     { name: 'Home', href: '/', icon: Heart },
     { name: 'Assessment', href: '/assessment', icon: BarChart3 },
     { name: 'Dashboard', href: '/dashboard', icon: User },
+    { name: 'AI Report', href: '/report', icon: Brain },
     { name: 'About', href: '/about', icon: BookOpen },
   ];
 
