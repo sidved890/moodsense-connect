@@ -10,6 +10,7 @@ import { TrendingUp, Heart, Brain, Moon, Zap, Users, Share2, Calendar, Target, L
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
+import ProgressSection from '@/components/ProgressSection';
 
 interface AssessmentData {
   id: string;
@@ -331,128 +332,15 @@ const Dashboard = () => {
           </Card>
         </div>
 
+        {/* My Progress Section */}
+        <div className="mb-8">
+          <ProgressSection assessments={assessments} />
+        </div>
+
         {/* Main Content Grid */}
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Left Column - Charts */}
           <div className="lg:col-span-2 space-y-8">
-            {/* Wellness Trends */}
-            <Card className="wellness-card">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle className="flex items-center">
-                    <TrendingUp className="h-5 w-5 mr-2 text-primary" />
-                    Your Wellness Journey
-                  </CardTitle>
-                  <Select value={timeFrame} onValueChange={setTimeFrame}>
-                    <SelectTrigger className="w-40">
-                      <Clock className="h-4 w-4 mr-2" />
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="24hours">Last 24 Hours</SelectItem>
-                      <SelectItem value="7days">Last 7 Days</SelectItem>
-                      <SelectItem value="alltime">All Time</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <ResponsiveContainer width="100%" height={400}>
-                  <LineChart data={trendData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
-                    <CartesianGrid 
-                      strokeDasharray="2 2" 
-                      stroke="hsl(var(--border))"
-                      opacity={0.3}
-                    />
-                    <XAxis 
-                      dataKey="time" 
-                      stroke="hsl(var(--muted-foreground))"
-                      fontSize={12}
-                      tick={{ fill: 'hsl(var(--muted-foreground))' }}
-                    />
-                    <YAxis 
-                      stroke="hsl(var(--muted-foreground))"
-                      fontSize={12}
-                      domain={[0, 10]}
-                      tick={{ fill: 'hsl(var(--muted-foreground))' }}
-                    />
-                    <Line
-                      type="monotone"
-                      dataKey="mood"
-                      stroke="hsl(var(--accent-bright))"
-                      strokeWidth={3}
-                      dot={{ 
-                        fill: 'hsl(var(--background))', 
-                        stroke: 'hsl(var(--accent-bright))', 
-                        strokeWidth: 3, 
-                        r: 5 
-                      }}
-                      activeDot={{ 
-                        r: 7, 
-                        stroke: 'hsl(var(--accent-bright))', 
-                        strokeWidth: 2,
-                        fill: 'hsl(var(--background))'
-                      }}
-                      name="Mood"
-                    />
-                    <Line
-                      type="monotone"
-                      dataKey="stress"
-                      stroke="hsl(var(--destructive))"
-                      strokeWidth={3}
-                      dot={{ 
-                        fill: 'hsl(var(--background))', 
-                        stroke: 'hsl(var(--destructive))', 
-                        strokeWidth: 3, 
-                        r: 5 
-                      }}
-                      activeDot={{ 
-                        r: 7, 
-                        stroke: 'hsl(var(--destructive))', 
-                        strokeWidth: 2,
-                        fill: 'hsl(var(--background))'
-                      }}
-                      name="Stress"
-                    />
-                    <Line
-                      type="monotone"
-                      dataKey="energy"
-                      stroke="hsl(var(--primary))"
-                      strokeWidth={3}
-                      dot={{ 
-                        fill: 'hsl(var(--background))', 
-                        stroke: 'hsl(var(--primary))', 
-                        strokeWidth: 3, 
-                        r: 5 
-                      }}
-                      activeDot={{ 
-                        r: 7, 
-                        stroke: 'hsl(var(--primary))', 
-                        strokeWidth: 2,
-                        fill: 'hsl(var(--background))'
-                      }}
-                      name="Energy"
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-                
-                {/* Legend */}
-                <div className="flex items-center justify-center gap-6 mt-4">
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded-full border-2 border-accent-bright bg-background"></div>
-                    <span className="text-sm font-medium">Mood</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded-full border-2 border-destructive bg-background"></div>
-                    <span className="text-sm font-medium">Stress</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded-full border-2 border-primary bg-background"></div>
-                    <span className="text-sm font-medium">Energy</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
 
             {/* Current Stats Summary */}
             <Card className="wellness-card">
